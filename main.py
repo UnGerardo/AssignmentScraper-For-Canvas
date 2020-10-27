@@ -15,7 +15,8 @@ if __name__ == '__main__':
             assignments = course.get_assignments(bucket="upcoming")
             for assignment in assignments:
                 try:
-                    print(assignment)
+                    # assignment.due_at is printed in Alpha Time Zone format, need to convert to PST
+                    print(assignment.name + ' ' + assignment.due_at)
                 except AttributeError as er:
                     print("Error occurred, " + str(er))
             print()
