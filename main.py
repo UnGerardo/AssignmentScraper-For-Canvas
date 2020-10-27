@@ -12,5 +12,12 @@ if __name__ == '__main__':
     for course in courses:
         try:
             print(course)
+            assignments = course.get_assignments(bucket="upcoming")
+            for assignment in assignments:
+                try:
+                    print(assignment)
+                except AttributeError as er:
+                    print("Error occurred, " + str(er))
+            print()
         except AttributeError as e:
             print("Error occurred, " + str(e))
