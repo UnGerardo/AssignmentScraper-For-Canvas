@@ -1,6 +1,8 @@
 import canvasapi as cv
 import keys
 
+# to check time, and send messages when assignments are almost due, can take the local time/time right now in alpha time
+# and compare it to the time given by assignment.due_at instead of converting
 if __name__ == '__main__':
     API_URL = keys.URL
     API_KEY = keys.TOKEN
@@ -14,7 +16,7 @@ if __name__ == '__main__':
     for course in courses:
         try:
             if course.term['name'] == "Fall 2020 Semester" and course.name:
-                print(course)
+                # print(course)
                 assignments = course.get_assignments(bucket="upcoming")
                 for assignment in assignments:
                     try:
