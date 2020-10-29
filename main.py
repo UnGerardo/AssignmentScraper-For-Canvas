@@ -19,8 +19,10 @@ if __name__ == '__main__':
                 for assignment in assignments:
                     try:
                         # assignment.due_at is printed in Alpha Time Zone format, need to convert to PST
-                        print(assignment.name + ' ' + assignment.due_at)
-                    except AttributeError as er:
+                        # checks if assignment is meant to be graded if it is then print
+                        if assignment.points_possible > 0:
+                            print(assignment.name + ' ' + assignment.due_at)
+                    except TypeError as er:
                         pass
                         # print("Error occurred, " + str(er))
                 print()
