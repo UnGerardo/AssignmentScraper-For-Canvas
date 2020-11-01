@@ -2,6 +2,7 @@ import canvasapi as cv
 import datetime as dt
 from datetime import datetime
 import keys
+from twilio.rest import Client
 
 
 # This method takes in a date and turns it into a datetime object to compare with others
@@ -31,6 +32,9 @@ if __name__ == '__main__':
     now = str(datetime.now(dt.timezone.utc))
     nowDTObject = turnInToDTObj(now)
 
+    # authenticates twilio account and creates client object
+    client = Client(keys.TWILIO_ACCOUNT_SID, keys.TWILIO_AUTH_TOKEN)
+
     # go through each course and print each assignment and time left to submit
     for course in courses:
         # catch exception in case course isn't in current term or has no name
@@ -48,8 +52,16 @@ if __name__ == '__main__':
                             timeLeft = str(assignmentDTObject - nowDTObject)
                             print("    Assignment: " + assignment.name + ", is due in: "
                                   + timeLeft)
+                            # checks if assignment is due in less than 24 hours
                             if "day" not in timeLeft:
                                 print("    This assignment is due today")
+                                # this sends a text message informing the user that an assignment is due today
+                                message = client.messages \
+                                    .create(
+                                        body="Hey, " + assignment.name + " is due today.",
+                                        from_=keys.TWILIO_NUMBER,
+                                        to=keys.USER_NUM
+                                    )
                     except TypeError as er:
                         pass
                         # print("Error occurred, " + str(er))
