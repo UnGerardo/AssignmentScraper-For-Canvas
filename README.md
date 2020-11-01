@@ -5,3 +5,8 @@ This script gets the assignments posted on my Canvas page that are due and sends
 GIF:
 
 ![showcase](https://github.com/UnGerardo/AssignmentScraper-For-Canvas/blob/main/AssignmentScraper.gif)
+
+
+GIF - Final:
+
+![showcase](https://github.com/UnGerardo/AssignmentScraper-For-Canvas/blob/main/AssignmentScraperFinal.gif)
