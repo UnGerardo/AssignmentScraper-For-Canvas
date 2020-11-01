@@ -60,14 +60,14 @@ if __name__ == '__main__':
 
                 # this gets the upcoming assignments of a course (assignments whose due date hasn't passed)
                 assignments = course.get_assignments(bucket="upcoming")
+
                 for assignment in assignments:
                     try:
-                        # checks if assignment is meant to be graded if it is then print
-                        if assignment.points_possible > 0:
+                        # checks if assignment gives points and hasn't been submitted
+                        if assignment.points_possible > 0 and not assignment.has_submitted_submissions:
                             assignmentDTObject = turnInToDTObj(assignment.due_at)
                             timeLeft = str(assignmentDTObject - nowDTObject)
-                            print("    Assignment: " + assignment.name + ", is due in: "
-                                  + timeLeft)
+                            print("    Assignment: " + assignment.name + ", is due in: " + timeLeft)
                             # checks if assignment is due in less than 24 hours
                             if "day" not in timeLeft:
                                 print("    This assignment is due today")
