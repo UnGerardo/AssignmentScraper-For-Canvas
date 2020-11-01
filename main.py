@@ -35,6 +35,8 @@ if __name__ == '__main__':
     # authenticates twilio account and creates client object
     client = Client(keys.TWILIO_ACCOUNT_SID, keys.TWILIO_AUTH_TOKEN)
 
+    assignmentsDueToday = []
+
     # go through each course and print each assignment and time left to submit
     for course in courses:
         # catch exception in case course isn't in current term or has no name
@@ -55,13 +57,7 @@ if __name__ == '__main__':
                             # checks if assignment is due in less than 24 hours
                             if "day" not in timeLeft:
                                 print("    This assignment is due today")
-                                # this sends a text message informing the user that an assignment is due today
-                                message = client.messages \
-                                    .create(
-                                        body="Hey, " + assignment.name + " is due today.",
-                                        from_=keys.TWILIO_NUMBER,
-                                        to=keys.USER_NUM
-                                    )
+                                assignmentsDueToday.append(assignment.name)
                     except TypeError as er:
                         pass
                         # print("Error occurred, " + str(er))
@@ -69,3 +65,11 @@ if __name__ == '__main__':
         except AttributeError as e:
             pass
             # print("Error occurred, " + str(e))
+    # this sends a text message informing the user that an assignment/s is due today
+    if assignmentsDueToday:
+        message = client.messages \
+            .create(
+                body=" \nDue today:\n" + ',\n'.join(assignmentsDueToday),
+                from_=keys.TWILIO_NUMBER,
+                to=keys.USER_NUM
+            )
