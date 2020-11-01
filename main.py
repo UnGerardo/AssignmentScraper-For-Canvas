@@ -22,11 +22,24 @@ def turnInToDTObj(datetimeDue):
 if __name__ == '__main__':
     # set api necessities and create canvas object
     API_URL = keys.URL
-    API_KEY = keys.TOKEN
-    canvas = cv.Canvas(API_URL, API_KEY)
+    API_TOKEN = keys.TOKEN
+    canvas = cv.Canvas(API_URL, API_TOKEN)
+
+    # create second canvas object if user has two different Canvas accounts
+    SEC_API_URL = keys.SECOND_URL
+    SEC_API_TOKEN = keys.SECOND_TOKEN
+    secondCanvas = cv.Canvas(SEC_API_URL, SEC_API_TOKEN)
 
     # gets courses & respective term. Returns dict -> course.term; 'name' is the key for the term name
     courses = canvas.get_courses(include=['term'])
+    secondCourses = secondCanvas.get_courses(include=['term'])
+    allCourses = []
+
+    # puts all courses in allCourses to only check one list
+    for course in courses:
+        allCourses.append(course)
+    for course in secondCourses:
+        allCourses.append(course)
 
     # Get current time & run it through function 'turnInToDTObj' - gets rid of milliseconds - keeps it as datetime obj
     now = str(datetime.now(dt.timezone.utc))
@@ -35,13 +48,14 @@ if __name__ == '__main__':
     # authenticates twilio account and creates client object
     client = Client(keys.TWILIO_ACCOUNT_SID, keys.TWILIO_AUTH_TOKEN)
 
+    # collects every assignment that is due today to send one message with all of them
     assignmentsDueToday = []
 
     # go through each course and print each assignment and time left to submit
-    for course in courses:
+    for course in allCourses:
         # catch exception in case course isn't in current term or has no name
         try:
-            if course.term['name'] == "Fall 2020 Semester" and course.name:
+            if 'Fall 2020' in course.term['name'] and course.name:
                 print("For " + str(course) + ':')
 
                 # this gets the upcoming assignments of a course (assignments whose due date hasn't passed)
