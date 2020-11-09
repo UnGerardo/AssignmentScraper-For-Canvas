@@ -18,7 +18,7 @@ def turnInToDTObj(datetimeDue):
     return datetime(numList[0], numList[1], numList[2], numList[3], numList[4], numList[5])
 
 
-# utc and alpha time zone are both ahead of PST by 8 hours
+# utc and alpha time zone are both ahead of PST by 8 hours / maybe also check if assignments have started already
 if __name__ == '__main__':
     # set api necessities and create canvas object
     API_URL = keys.URL
@@ -60,11 +60,10 @@ if __name__ == '__main__':
 
                 # this gets the upcoming assignments of a course (assignments whose due date hasn't passed)
                 assignments = course.get_assignments(bucket="upcoming")
-
                 for assignment in assignments:
                     try:
                         # checks if assignment gives points and hasn't been submitted
-                        if assignment.points_possible > 0 and not assignment.has_submitted_submissions:
+                        if assignment.points_possible > 0 and not assignment.in_closed_grading_period:
                             assignmentDTObject = turnInToDTObj(assignment.due_at)
                             timeLeft = str(assignmentDTObject - nowDTObject)
                             print("    Assignment: " + assignment.name + ", is due in: " + timeLeft)
@@ -79,6 +78,7 @@ if __name__ == '__main__':
         except AttributeError as e:
             pass
             # print("Error occurred, " + str(e))
+        
     # this sends a text message informing the user that an assignment/s is due today
     if assignmentsDueToday:
         message = client.messages \
