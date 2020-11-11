@@ -60,17 +60,29 @@ if __name__ == '__main__':
 
                 # this gets the upcoming assignments of a course (assignments whose due date hasn't passed)
                 assignments = course.get_assignments(bucket="upcoming")
+                #print([ a for a in assignments]) #for POL-1 check discussion_topic dict and 'published' key and subscribed; check if any discussions are graded
                 for assignment in assignments:
                     try:
                         # checks if assignment gives points and hasn't been submitted
                         if assignment.points_possible > 0 and not assignment.in_closed_grading_period:
-                            assignmentDTObject = turnInToDTObj(assignment.due_at)
-                            timeLeft = str(assignmentDTObject - nowDTObject)
-                            print("    Assignment: " + assignment.name + ", is due in: " + timeLeft)
-                            # checks if assignment is due in less than 24 hours
-                            if "day" not in timeLeft:
-                                print("    This assignment is due today")
-                                assignmentsDueToday.append(assignment.name)
+                            # check if assignment is a discussion topic
+                            if assignment.submission_types == ['discussion_topic']:
+                                if assignment.subscribed:
+                                    assignmentDTObject = turnInToDTObj(assignment.due_at)
+                                    timeLeft = str(assignmentDTObject - nowDTObject)
+                                    print("    Assignment: " + assignment.name + ", is due in: " + timeLeft)
+                                    # checks if assignment is due in less than 24 hours
+                                    if "day" not in timeLeft:
+                                        print("    This assignment is due today")
+                                        assignmentsDueToday.append(assignment.name)
+                            else:
+                                assignmentDTObject = turnInToDTObj(assignment.due_at)
+                                timeLeft = str(assignmentDTObject - nowDTObject)
+                                print("    Assignment: " + assignment.name + ", is due in: " + timeLeft)
+                                # checks if assignment is due in less than 24 hours
+                                if "day" not in timeLeft:
+                                    print("    This assignment is due today")
+                                    assignmentsDueToday.append(assignment.name)
                     except TypeError as er:
                         pass
                         # print("Error occurred, " + str(er))
