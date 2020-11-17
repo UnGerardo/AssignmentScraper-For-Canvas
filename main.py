@@ -60,14 +60,15 @@ if __name__ == '__main__':
 
                 # this gets the upcoming assignments of a course (assignments whose due date hasn't passed)
                 assignments = course.get_assignments(bucket="upcoming")
-                #print([ a for a in assignments]) #for POL-1 check discussion_topic dict and 'published' key and subscribed; check if any discussions are graded
+                #print([a for a in assignments]) #for POL-1 check discussion_topic dict and 'published' key and subscribed; check if any discussions are graded
                 for assignment in assignments:
                     try:
                         # checks if assignment gives points and hasn't been submitted
                         if assignment.points_possible > 0 and not assignment.in_closed_grading_period:
                             # check if assignment is a discussion topic
                             if assignment.submission_types == ['discussion_topic']:
-                                if assignment.subscribed:
+                                # check if subscribed to discussion (auto subscribe on submit)
+                                if not assignment.discussion_topic['subscribed']:
                                     assignmentDTObject = turnInToDTObj(assignment.due_at)
                                     timeLeft = str(assignmentDTObject - nowDTObject)
                                     print("    Assignment: " + assignment.name + ", is due in: " + timeLeft)
@@ -75,6 +76,7 @@ if __name__ == '__main__':
                                     if "day" not in timeLeft:
                                         print("    This assignment is due today")
                                         assignmentsDueToday.append(assignment.name)
+                                # print(assignment.subscribed)
                             else:
                                 assignmentDTObject = turnInToDTObj(assignment.due_at)
                                 timeLeft = str(assignmentDTObject - nowDTObject)
